@@ -1,5 +1,5 @@
 let GeneratorFunction = Object.getPrototypeOf(function* () {});
-GeneratorFunction.prototype.nth = function (values, length) {
+GeneratorFunction.prototype.nths = function (values, length) {
   if (Array.isArray(values)) {
     let n = 1;
     let arr = [];
@@ -14,37 +14,22 @@ GeneratorFunction.prototype.nth = function (values, length) {
     }
     return arr;
   } else {
-    let a = this.next().value;
-    let k = values;
-    while (--k > 0) {
-      this.next();
-    }
-    return a;
+    return new Error(
+      "Function takes an array of Yields as first argument, index starts from 1.\n *** for example \n \t generator.nths([1,4,6], 9) yields the 1st, 4th and 6th values of a generator function which has 9 possible yields\n"
+    );
   }
 };
-function* genx() {
-  yield {
-    name: "paul",
-    age: 25,
-  };
-  yield "Calculus";
-  yield 23;
-  yield ["age", 17, { day: "Monday" }];
-  return 5;
-}
-function* geny() {
-  yield {
-    name: "paul",
-    age: 25,
-  };
-  yield "Calculus";
-  yield 23;
-  yield ["age", 17, { day: "Monday" }];
-  return 5;
-}
-
-let xy = genx();
-let yy = geny();
-console.log(xy.nth([1,3],5));
-console.log(yy.nth([2, 3], 5));
-console.log(xy.nth([1, 2], 5));
+GeneratorFunction.prototype.nth = function (values) {
+  if (!Array.isArray(values)) {
+      // this.next().value;
+    while (--values > 0) {
+      this.next();
+    }
+    return this.next().value;
+  } else {
+    return new Error(
+      "Function takes a single value as first arguement, index starts from 1.\n *** for example \n \t generator.nth(1, 9) yields the 1st value of a generator function which has 9 possible yields\n"
+    );
+  }
+};
+module.exports = GeneratorFunction;
